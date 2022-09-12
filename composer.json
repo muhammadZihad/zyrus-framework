@@ -1,0 +1,14 @@
+{
+  "name": "zihad/zyras",
+  "description": "A mini php framework",
+  "type": "library",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "Zyrus\\": "src/"
+    }
+  },
+  "require": {
+    "symfony/var-dumper": "^5.4"
+  }
+}
