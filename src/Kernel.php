@@ -2,9 +2,16 @@
 
 namespace Zyrus;
 
+use Zyrus\Application\Application;
+
 class Kernel
 {
-    private $application;
+    private $app;
 
     protected $singletonClasses = [];
+
+    public function __construct(Application $app)
+    {
+        $this->app = $app;
+    }
 }
