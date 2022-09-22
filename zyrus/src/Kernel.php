@@ -13,5 +13,12 @@ class Kernel
     public function __construct(Application $app)
     {
         $this->app = $app;
+
+        $this->registerServices();
+    }
+
+
+    public function registerServices()
+    {
     }
 }

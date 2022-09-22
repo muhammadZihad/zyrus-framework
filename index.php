@@ -15,4 +15,4 @@ $kernel = $app->make(Zyrus\Kernel::class, true);
 
 $req = Zyrus\Request\Request::capture();
 
-dd($kernel, $app, $req);
+dd($kernel, $app, $req->all());
