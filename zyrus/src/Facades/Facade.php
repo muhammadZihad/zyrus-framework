@@ -1,32 +1,55 @@
 <?php
 
-namespace App\Facades;
+namespace Zyrus\Facades;
 
+use App\Exceptions\FacadeHandlerException;
 use RuntimeException;
+use Zyrus\Application\Application;
 
 abstract class Facade
 {
+    protected static $app;
 
     protected static $resolvedInstances;
 
+    public static function setFacadeApplication(Application $app)
+    {
+        static::$app = $app;
+    }
 
-    public static function getFacadeRoot()
+    protected static function getFacadeRoot()
     {
         return static::resolveFacadeInstance(static::getFacadeAccessor());
     }
 
 
-    public static function resolveFacadeInstance($name)
+    protected static function resolveFacadeInstance($name)
     {
         if (is_object($name)) {
             return $name;
         }
 
+        $name = static::$app->getAlias($name);
+
         if (isset(static::$resolvedInstances[$name])) {
             return static::$resolvedInstances[$name];
         }
 
-        return new $name;
+        $concrete = static::$app->make($name);
+
+        if (is_null($concrete)) {
+            throw new FacadeHandlerException("$name could not be resolved");
+        }
+
+        static::setResolvedInstances($name, $concrete);
+
+        return $concrete;
+    }
+
+
+    protected static function setResolvedInstances($name, $concrete)
+    {
+        static::$resolvedInstances[$name] = $concrete;
     }
 
 
@@ -36,12 +59,12 @@ abstract class Facade
     }
 
 
-    public function __callStatic($method, $arguments)
+    public static function __callStatic($method, $arguments)
     {
         $instance = static::getFacadeRoot();
 
         if (!$instance) {
-            throw new RuntimeException('Invalid facade');
+            throw new FacadeHandlerException('Invalid facade');
         }
 
         return $instance->$method(...$arguments);

@@ -1,3 +1,7 @@
 <?php
 
-dd(1);
+use App\Http\Controllers\HomeController;
+use Zyrus\Route\Facade\Route;
+
+Route::get('/index', [HomeController::class, 'index']);
+Route::get('/home', 'HomeController@home');

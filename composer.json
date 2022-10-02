@@ -6,7 +6,10 @@
   "autoload": {
     "psr-4": {
       "Zyrus\\": "zyrus/src/"
-    }
+    },
+    "files": [
+      "zyrus/src/helpers/helpers.php"
+    ]
   },
   "require": {
     "symfony/var-dumper": "^5.4"
