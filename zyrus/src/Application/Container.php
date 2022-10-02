@@ -6,8 +6,10 @@ use Exception;
 use ReflectionClass;
 use ReflectionNamedType;
 
-class Application
+class Container
 {
+    protected static $instance;
+
     protected $bindings = [];
 
     protected $resolved = [];
@@ -17,31 +19,54 @@ class Application
     protected $aliases = [];
 
 
-    public function __construct()
+    /**
+     * Set application instance
+     * @param Container $instance
+     * @return void
+     */
+    protected static function setInstance(Application $instance)
     {
-        $this->bootstrapApplication();
+        static::$instance = $instance;
     }
 
 
     /**
-     * Bootstrap Application class
-     * @return void
+     * Get application instance
+     * @return static
      */
-    public function bootstrapApplication()
+    public static function getInstance()
     {
-        $this->mergeAliases();
-        $this->logInstance('app', $this);
+        if (is_null(static::$instance)) {
+            static::$instance = new static;
+        }
+        return static::$instance;
     }
 
     /**
      * Merge aliases
      * @return void
      */
-    public function mergeAliases()
+    protected function mergeAliases()
     {
         $this->aliases = array_merge([
             'Zyrus\Application\Application' => 'app'
         ], $this->aliases);
+    }
+
+
+    /**
+     * Merge bindings
+     * @return void
+     */
+    protected function mergeBindings()
+    {
+        $this->bindings = array_merge([], $this->bindings);
+    }
+
+
+    public function getBinding($abstract)
+    {
+        return $this->bindings[$abstract] ?? null;
     }
 
 
@@ -62,9 +87,14 @@ class Application
      * @param string $abstract
      * @return bool
      */
+    public function isResolved($abstract)
+    {
+        return isset($this->resolved[$abstract]) && $this->resolved[$abstract] === true;
+    }
+
     public function resolved($abstract)
     {
-        return isset($this->resolved[$abstract]);
+        $this->resolved[$abstract] = true;
     }
 
 
@@ -88,8 +118,14 @@ class Application
      */
     public function resolve($abstract, $shared = false)
     {
+
         $alias = $this->getAlias($abstract);
-        if ($this->resolved($abstract) && $this->hasInstance($alias)) {
+
+        if ($bind = $this->getBinding($alias)) {
+            $abstract = $bind;
+        }
+
+        if ($this->isResolved($abstract) && $this->hasInstance($alias)) {
             return $this->getResolved($alias);
         }
 
