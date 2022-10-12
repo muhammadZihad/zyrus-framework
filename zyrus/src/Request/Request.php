@@ -3,22 +3,23 @@
 namespace Zyrus\Request;
 
 use Zyrus\Collection\InputBag;
+use Zyrus\Collection\ServerInputBag;
 
 class Request
 {
-    private $method;
+    public $method;
 
-    private $attributes;
+    public $attributes;
 
-    private $request;
+    public $request;
 
-    private $query;
+    public $query;
 
-    private $cookies;
+    public $cookies;
 
-    private $files;
+    public $files;
 
-    private $server;
+    public $server;
 
     public function __construct($query = [], $request = [], $attributes = [], $cookies = [], $files = [], $server = [])
     {
@@ -32,7 +33,7 @@ class Request
         $this->attributes = new InputBag($attributes);
         $this->cookies = new InputBag($cookies);
         $this->files = new InputBag($files);
-        $this->server = new InputBag($server);
+        $this->server = new ServerInputBag($server);
         $this->setMethod();
     }
 
@@ -51,14 +52,24 @@ class Request
         return new static($_GET, $_POST, [], $_COOKIE, $_FILES, $_SERVER);
     }
 
-    private function setMethod()
+    public function setMethod()
     {
         $this->method = $_SERVER["REQUEST_METHOD"];
+    }
+
+    public function getMethod()
+    {
+        return $this->method;
     }
 
 
     public function all()
     {
         return array_merge($this->query->toArray(), $this->request->toArray());
+    }
+
+
+    public function __get($name)
+    {
     }
 }
