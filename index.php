@@ -17,4 +17,6 @@ $kernel = $app->make(Zyrus\Kernel::class, true);
 
 $req = Zyrus\Request\Request::capture();
 
+$response = $kernel->handle($req);
+
 // dd($kernel, $app, $req->all());
