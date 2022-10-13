@@ -26,6 +26,7 @@ class Application extends Container
         $this->logInstance($this->getAlias(get_class($this)), $this);
         $this->resolved(get_class($this));
         static::setInstance($this);
+        $this->registerProviders();
     }
 
 
@@ -36,5 +37,26 @@ class Application extends Container
     public function getBasePath()
     {
         return $this->basePath;
+    }
+
+    public function registerProviders()
+    {
+        foreach ($this->getDefaultProviders() as $provider) {
+            $this->register($provider);
+        }
+    }
+
+
+    public function register($provider)
+    {
+        $serviceProvider = new $provider($this);
+        $serviceProvider->register();
+    }
+
+    public function getDefaultProviders()
+    {
+        return [
+            'Zyrus\Route\RouteServiceProvider'
+        ];
     }
 }

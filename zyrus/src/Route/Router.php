@@ -4,6 +4,7 @@ namespace Zyrus\Route;
 
 use Zyrus\Exceptions\BindingException;
 use Zyrus\Application\Application;
+use Zyrus\Exceptions\MethodNotFoundException;
 use Zyrus\Request\Request;
 use Zyrus\Exceptions\RouteNotFoundException;
 
@@ -74,7 +75,15 @@ class Router
 
     public function runRoute(Request $request, $route)
     {
-        dd(func_get_args());
+        $controller = $this->app->make($route[0]);
+
+        $method = $route[1];
+
+        if (!method_exists($controller, $method)) {
+            throw new MethodNotFoundException("$route[0] Does not have {$method} method.");
+        }
+
+        return $controller->$method();
     }
 
     public function findRoute(Request $request)
@@ -86,7 +95,7 @@ class Router
         }
 
         $requestUri = $request->server->getRequestUri();
-        dd($this->routes, $requestUri);
+
         if (!array_key_exists($requestUri, $this->routes[$method])) {
             throw new RouteNotFoundException("Route Not Found");
         }

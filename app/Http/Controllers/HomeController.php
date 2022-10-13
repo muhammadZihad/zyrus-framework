@@ -6,7 +6,7 @@ class HomeController extends Controller
 {
     public function index()
     {
-        echo "Hi from index method";
+        return "Hi from index method";
     }
 
     public function home()

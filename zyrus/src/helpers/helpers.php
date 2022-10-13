@@ -1,6 +1,10 @@
 <?php
 
-function app()
+function app($alias = null)
 {
-    dd(\Zyrus\Application\Container::getInstance());
+    $instance = \Zyrus\Application\Container::getInstance();
+    if (!$alias || $instance->isResolved($alias)) {
+        return $instance;
+    }
+    return $instance->getResolved($alias);
 }

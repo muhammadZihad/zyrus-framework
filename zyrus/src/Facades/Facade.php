@@ -35,7 +35,7 @@ abstract class Facade
             return static::$resolvedInstances[$name];
         }
 
-        $concrete = static::$app->make($name);
+        $concrete = static::$app->make($name, true);
 
         if (is_null($concrete)) {
             throw new FacadeHandlerException("$name could not be resolved");

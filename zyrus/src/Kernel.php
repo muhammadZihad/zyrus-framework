@@ -39,10 +39,7 @@ class Kernel
 
     public function registerRouteServices()
     {
-        $this->app->bind('router', 'Zyrus\Route\Router');
         require_once $this->app->getBasePath() . DIRECTORY_SEPARATOR . 'route.php';
-
-        dd($this->app, $this->router);
     }
 
 
