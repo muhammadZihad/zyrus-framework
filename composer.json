@@ -5,7 +5,8 @@
   "license": "MIT",
   "autoload": {
     "psr-4": {
-      "Zyrus\\": "zyrus/src/"
+      "Zyrus\\": "zyrus/src/",
+      "App\\": "app/"
     },
     "files": [
       "zyrus/src/helpers/helpers.php"

@@ -49,7 +49,8 @@ class Container
     protected function mergeAliases()
     {
         $this->aliases = array_merge([
-            'Zyrus\Application\Application' => 'app'
+            'Zyrus\Application\Application' => 'app',
+            'Zyrus\Route\Router' => 'router'
         ], $this->aliases);
     }
 
@@ -76,9 +77,10 @@ class Container
      * @param string $concrete null
      * @return void
      */
-    public function bind($abstract, $concrete = null)
+    public function bind($abstract, $concrete = null, $shared = false)
     {
-        $this->bindings[$abstract] = $concrete ?? $abstract;
+        $concrete = $concrete ?? $abstract;
+        $this->bindings[$abstract] = compact('concrete', 'shared');
     }
 
 
@@ -122,7 +124,7 @@ class Container
         $alias = $this->getAlias($abstract);
 
         if ($bind = $this->getBinding($alias)) {
-            $abstract = $bind;
+            list('concrete' => $abstract, 'shared' => $shared) = $bind;
         }
 
         if ($this->isResolved($abstract) && $this->hasInstance($alias)) {
