@@ -6,8 +6,8 @@ use Zyrus\Facades\Facade;
 
 /**
  * List of methods available
- * @method static void get()
- * @method static array getALlRoutes()
+ * @method static void get($uri = '/', $callback = [])
+ * @method static array getALlRoutes($uri = '/', $callback = [])
  * 
  * 
  * @see \Zyrus\Route\Router
