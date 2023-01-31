@@ -3,6 +3,7 @@
 namespace Zyrus;
 
 use Zyrus\Application\Application;
+use Zyrus\Exceptions\NotFoundException;
 use Zyrus\Facades\Facade;
 use Zyrus\Request\Request;
 use Zyrus\Route\Router;
@@ -45,7 +46,11 @@ class Kernel
 
     public function handle(Request $request)
     {
-        $response = $this->router->dispatch($request);
-        return $response;
+        try {
+            $response = $this->router->dispatch($request);
+            return $response;
+        } catch (NotFoundException $exception) {
+            return $exception->render();
+        }
     }
 }

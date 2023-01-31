@@ -14,6 +14,9 @@ class Router
 
     protected $request;
 
+    /**
+     * @var array<Route>
+     */
     protected $routes = [
         'get' => [],
         'post' => [],
@@ -54,7 +57,8 @@ class Router
 
     protected function setRoute($type, $url, $callback)
     {
-        $this->routes[$type][$url] = $callback;
+        $route = new Route($url, $type, $callback);
+        $this->routes[$type][] = $route;
     }
 
 
@@ -73,19 +77,34 @@ class Router
         return $this->runRoute($request, $this->findRoute($request));
     }
 
-    public function runRoute(Request $request, $route)
+    /**
+     * @param Request $request
+     * @param Route $route
+     * @return mixed
+     * @throws MethodNotFoundException
+     */
+    public function runRoute(Request $request, Route $route)
     {
-        $controller = $this->app->make($route[0]);
+        $action = $route->getAction();
 
-        $method = $route[1];
+        $controller = $this->app->make($action[0]);
+
+        $method = $action[1];
 
         if (!method_exists($controller, $method)) {
-            throw new MethodNotFoundException("$route[0] Does not have {$method} method.");
+            throw new MethodNotFoundException("$action[0] Does not have {$method} method.");
         }
 
         return $controller->$method();
     }
 
+    /**
+     * Find matching route
+     *
+     * @param Request $request
+     * @return Route
+     * @throws RouteNotFoundException
+     */
     public function findRoute(Request $request)
     {
         $method = strtolower($request->getMethod());
@@ -96,11 +115,13 @@ class Router
 
         $requestUri = $request->server->getRequestUri();
 
-        if (!array_key_exists($requestUri, $this->routes[$method])) {
-            throw new RouteNotFoundException("Route Not Found");
+        foreach ($this->routes[$method] as $route) {
+            if ($route->matches($requestUri)) {
+                return $route;
+            }
         }
 
-        return $this->routes[$method][$requestUri];
+        throw new RouteNotFoundException("Route Not Found");
     }
 
 
