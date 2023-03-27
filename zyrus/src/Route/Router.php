@@ -66,7 +66,7 @@ class Router
      * Returns all the registered route
      * @return array;
      */
-    public function getALlRoutes()
+    public function getAllRoutes()
     {
         return $this->routes;
     }
