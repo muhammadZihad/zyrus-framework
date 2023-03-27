@@ -107,6 +107,7 @@ class Route
     }
 
     /**
+     * Get the url for the route
      * @return string
      */
     public function getUrl(): string
@@ -115,6 +116,7 @@ class Route
     }
 
     /**
+     * Get regex of the route
      * @return string
      */
     public function getRegex(): string
@@ -123,6 +125,7 @@ class Route
     }
 
     /**
+     * Get variables for the route
      * @return array
      */
     public function getVariables(): array
@@ -131,6 +134,7 @@ class Route
     }
 
     /**
+     * Get actionables for the route
      * @return array
      */
     public function getAction(): array
@@ -139,6 +143,7 @@ class Route
     }
 
     /**
+     * Get request method
      * @return string
      */
     public function getMethod(): string
@@ -154,9 +159,6 @@ class Route
      */
     public function matches($requestUrl)
     {
-//        if ($this->url == "/home/{param}") {
-//            dd($this->getRegex(), $this->trimUrl($requestUrl));
-//        }
         return preg_match($this->getRegex(), $this->trimUrl($requestUrl));
     }
 
@@ -171,15 +173,26 @@ class Route
             return [];
         }
         return array_unique($matches[1]);
-
     }
 
-    private function setVariables(array $variables)
+    /**
+     * Set variables
+     *
+     * @param array $variables
+     * @return void
+     */
+    private function setVariables(array $variables): void
     {
         $this->variables = $variables;
     }
 
-    private function trimUrl($url)
+    /**
+     * Trim the url to remove forward slash
+     *
+     * @param string $url
+     * @return string
+     */
+    private function trimUrl(string $url): string
     {
         return rtrim(ltrim($url, "/"), "/");
     }
